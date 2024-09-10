@@ -6,7 +6,7 @@
     <button class="btn btn-primary">
       button
     </button> -->
-
+    <TheHeader/>
     <NuxtPage/>
   </div>
 </template>
