@@ -11,7 +11,8 @@
                 <div v-if="isLoading">
                   <Loading :title="isLoadingTitle"/>
                 </div>
-                <form @submit.prevent="saveProduct">
+                <div v-else>
+                    <form @submit.prevent="saveProduct">
                     <div class="mb-3">
                         <label for="name">Name</label>
                         <input type="text" v-model="product.name" class="form-control">
@@ -32,12 +33,16 @@
                         <button type="submit" class="btn btn-primary">Save</button>
                     </div>
                 </form>
+                </div>
+               
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     name: 'productCreate',
     data() {
@@ -58,6 +63,9 @@ export default {
             this.isLoading = true;
             this.isLoadingTitle = 'Saving'
 
+            axios.post().then(res => {
+
+            });
 
             // console.log("am here")
         }
