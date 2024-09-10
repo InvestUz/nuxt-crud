@@ -5,79 +5,78 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
-
-use function PHPUnit\Framework\isNull;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        $products = Product::get()->all();
+        $products = Product::all();
         return response()->json($products);
     }
 
-    public function store(StoreProductRequest $request)
+    public function store(Request $request)
     {
-        $product = new Product;
-        $product->name = $request->name;
-        $product->color = $request->color;
-        $product->email = $request->email;
-        $product->phone = $request->phone;
-        $product->save();
-        return response()->json([
-            'message product added'
-        ], 201);
+        try {
+            $product = new Product;
+            $product->name = $request->name;
+            $product->color = $request->color;
+            $product->email = $request->email;
+            $product->phone = $request->phone;
+            $product->save();
+            return response()->json([
+                'message' => 'Product added'
+            ], 201);
+        } catch (\Exception $e) {
+            \Log::error($e->getMessage());
+            return response()->json([
+                'message' => 'Server error'
+            ], 500);
+        }
     }
 
     public function show($id)
     {
         $product = Product::find($id);
-        if(!empty($product)){
-            return response($product);
-        }else{
+        if ($product) {
+            return response()->json($product);
+        } else {
             return response()->json([
-                'product not found'
+                'message' => 'Product not found'
             ], 404);
-        };
+        }
     }
-
 
     public function update(UpdateProductRequest $request, $id)
     {
-        if(Product::where('id', $id)){
-            $product = Product::find($id);
-            $product->name = is_null($request->name) ? $product->name : $request->name;
-            $product->phone = is_null($request->phone) ? $product->phone : $request->phone;
-            $product->email = is_null($request->email) ? $product->email : $request->email;
-            $product->color = is_null($request->color) ? $product->color : $request->color;
+        $product = Product::find($id);
+        if ($product) {
+            $product->name = $request->input('name', $product->name);
+            $product->color = $request->input('color', $product->color);
+            $product->email = $request->input('email', $product->email);
+            $product->phone = $request->input('phone', $product->phone);
             $product->save();
             return response()->json([
-                'product not found'
-            ], 404);
-        }else{
+                'message' => 'Product updated'
+            ]);
+        } else {
             return response()->json([
-                'product not found'
+                'message' => 'Product not found'
             ], 404);
         }
     }
 
     public function destroy($id)
     {
-        if(Product::where('id', $id)->exists()){
-            $product = Product::find($id);
-            $product->save();
-
+        $product = Product::find($id);
+        if ($product) {
+            $product->delete();
             return response()->json([
-                "message" => "destroyed"
+                "message" => "Product deleted"
             ], 202);
-        }else{
+        } else {
             return response()->json([
-                "message" => "not destroyed"
+                "message" => "Product not found"
             ], 404);
         }
     }

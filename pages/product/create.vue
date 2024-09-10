@@ -9,32 +9,32 @@
             </div>
             <div class="card-body">
                 <div v-if="isLoading">
-                  <Loading :title="isLoadingTitle"/>
+                    <Loading :title="isLoadingTitle" />
                 </div>
                 <div v-else>
                     <form @submit.prevent="saveProduct">
-                    <div class="mb-3">
-                        <label for="name">Name</label>
-                        <input type="text" v-model="product.name" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label for="color">Color</label>
-                        <input type="text" v-model="product.color" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label for="email">Email</label>
-                        <input type="email" v-model="product.email" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label for="phone">Phone</label>
-                        <input type="text" v-model="product.phone" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <button type="submit" class="btn btn-primary">Save</button>
-                    </div>
-                </form>
+                        <div class="mb-3">
+                            <label for="name">Name</label>
+                            <input type="text" v-model="product.name" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="color">Color</label>
+                            <input type="text" v-model="product.color" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email">Email</label>
+                            <input type="email" v-model="product.email" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone">Phone</label>
+                            <input type="text" v-model="product.phone" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
                 </div>
-               
+
             </div>
         </div>
     </div>
@@ -63,13 +63,30 @@ export default {
             this.isLoading = true;
             this.isLoadingTitle = 'Saving'
 
-            axios.post().then(res => {
+            // this.product.name = ""
+            // this.product.color = ""
+            // this.product.email = ""
+            // this.product.phone = ""
 
-            });
+            axios.post('http://127.0.0.1:8000/api/productss', this.product)
+                .then(res => {
+                    console.log(res, 'Response');
+                    this.isLoading = false;
+                    this.isLoadingTitle = 'Loading';
 
-            // console.log("am here")
+                    this.product.name = ""
+                    this.product.color = ""
+                    this.product.email = ""
+                    this.product.phone = ""
+                    this.resetForm();
+                })
+                .catch(err => {
+                    console.error(err);
+                    this.isLoading = false;
+                    this.isLoadingTitle = 'Loading';
+                });
+            }
         }
     }
-}
 
 </script>
